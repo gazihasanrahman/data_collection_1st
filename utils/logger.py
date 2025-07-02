@@ -32,7 +32,7 @@ def get_logger(log_name: str, email: bool = False, cloudwatch: bool = config.LOG
     if cloudwatch:
         if not log_group:
             raise ValueError('log_group must be provided for CloudWatch logging')
-        cw = watchtower.CloudWdatabase_errorsatchLogHandler(log_group=log_group, stream_name=log_name)
+        cw = watchtower.CloudWatchLogHandler(log_group=log_group, stream_name=log_name)
         cw.setFormatter(cloudwatch_formatter)
         logger.addHandler(cw)
     
