@@ -23,6 +23,11 @@ def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)
     return True
 
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+
 @app.post("/{path:path}")
 async def receive_data(path: str, data: Dict[str, Any], api_key_verified: bool = Depends(verify_api_key)):
     try:
@@ -30,8 +35,6 @@ async def receive_data(path: str, data: Dict[str, Any], api_key_verified: bool =
             case "1st-data":
                 sqs_client.send_message(QueueUrl=config.SQS_QUEUE_URL, MessageBody=json.dumps(data))
                 return {"status": "success"}
-            case "health":
-                return {"status": "healthy"}
             case _:
                 raise HTTPException(status_code=404, detail="Invalid path")
 

@@ -8,9 +8,9 @@ import config
 
 def test_first_data_endpoint():
     """
-    Test the /first_data endpoint with sample JSON data
+    Test the /1st-data endpoint with sample JSON data
     """
-    url = f"{config.TPD_API_HOST}:{config.TPD_API_PORT}/first_data"
+    url = f"http://{config.TPD_API_HOST}:{config.TPD_API_PORT}/1st-data"
     
     # Sample JSON data
     sample_data = {
@@ -31,7 +31,7 @@ def test_first_data_endpoint():
     }
     
     try:
-        print("Sending POST request to /first_data...")
+        print("Sending POST request to /1st-data...")
         print(f"URL: {url}")
         print(f"Data: {json.dumps(sample_data, indent=2)}")
         print("-" * 50)
@@ -42,12 +42,12 @@ def test_first_data_endpoint():
         print(f"Response: {response.text}")
         
         if response.status_code == 200:
-            print("✅ Success! Data was received and logged to console.")
+            print("✅ Success! Data was received and sent to SQS queue.")
         else:
             print("❌ Error occurred.")
             
     except requests.exceptions.ConnectionError:
-        print("❌ Connection error. Make sure the API server is running on localhost:8000")
+        print(f"❌ Connection error. Make sure the API server is running on {config.TPD_API_HOST}:{config.TPD_API_PORT}")
     except Exception as e:
         print(f"❌ Error: {e}")
 
@@ -55,8 +55,9 @@ def test_health_endpoint():
     """
     Test the health check endpoint
     """
+    url = f"http://{config.TPD_API_HOST}:{config.TPD_API_PORT}/health"
     try:
-        response = requests.get(f"{config.TPD_API_HOST}:{config.TPD_API_PORT}/health")
+        response = requests.get(url)
         print(f"Health check status: {response.status_code}")
         print(f"Health check response: {response.text}")
     except Exception as e:
