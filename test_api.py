@@ -10,8 +10,12 @@ def test_first_data_endpoint():
     """
     Test the /1st-data endpoint with sample JSON data
     """
-    url = f"http://{config.TPD_API_HOST}:{config.TPD_API_PORT}/1st-data"
-    
+    # url = f"http://{config.TPD_API_HOST}:{config.TPD_API_PORT}/1st-data"
+
+    url = f"https://data.tpd.zone/1st-data"
+
+
+
     # Sample JSON data
     sample_data = {
         "user_id": 12345,

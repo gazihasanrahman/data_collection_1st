@@ -28,13 +28,27 @@ async def health_check():
     return {"status": "healthy"}
 
 
+@app.post("/1st-data")
+async def receive_1st_data(data: Dict[str, Any]):
+    """Endpoint for 1st-data without authentication - IP whitelisted at ALB level"""
+    try:
+        sqs_client.send_message(QueueUrl=config.SQS_QUEUE_URL, MessageBody=json.dumps(data))
+        return {"status": "success"}
+    except Exception as e:
+        logger_1st.error(f"Error in received 1st-data: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
 @app.post("/{path:path}")
 async def receive_data(path: str, data: Dict[str, Any], api_key_verified: bool = Depends(verify_api_key)):
+    """General endpoint for other paths with authentication"""
     try:
+        # Skip 1st-data as it has its own endpoint
+        if path == "1st-data":
+            raise HTTPException(status_code=404, detail="Invalid path")
+            
+        # Handle other authenticated paths here
         match path:
-            case "1st-data":
-                sqs_client.send_message(QueueUrl=config.SQS_QUEUE_URL, MessageBody=json.dumps(data))
-                return {"status": "success"}
             case _:
                 raise HTTPException(status_code=404, detail="Invalid path")
 
