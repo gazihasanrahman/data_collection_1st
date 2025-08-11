@@ -18,35 +18,35 @@ def download_data(data):
 
 
 def process_sqs_messages():
-    # while True:
-    #     try:
-    #         response = sqs_client.receive_message(QueueUrl=config.SQS_QUEUE_URL, MaxNumberOfMessages=1, WaitTimeSeconds=20)
-    #         if 'Messages' in response:
-    #             for message in response['Messages']:
-    #                 data = json.loads(message['Body'])
-    #                 download_data(data)
-    #                 time.sleep(.001)
-    #                 sqs_client.delete_message(QueueUrl=config.SQS_QUEUE_URL, ReceiptHandle=message['ReceiptHandle'])
+    while True:
+        try:
+            response = sqs_client.receive_message(QueueUrl=config.SQS_QUEUE_URL, MaxNumberOfMessages=1, WaitTimeSeconds=20)
+            if 'Messages' in response:
+                for message in response['Messages']:
+                    data = json.loads(message['Body'])
+                    download_data(data)
+                    time.sleep(.001)
+                    sqs_client.delete_message(QueueUrl=config.SQS_QUEUE_URL, ReceiptHandle=message['ReceiptHandle'])
         
-    #     except KeyboardInterrupt:
-    #         logger_1st.info('Keyboard interrupt detected. Exiting...')
-    #         break
-    #     except Exception as e:
-    #         logger_1st.error(f'Error in 1st processing: {e}')
-    #         
-    try:
-        response = sqs_client.receive_message(QueueUrl=config.SQS_QUEUE_URL, MaxNumberOfMessages=1, WaitTimeSeconds=20)
-        if 'Messages' in response:
-            message = response['Messages'][0]
-            data = json.loads(message['Body'])
-            download_data(data)
-            time.sleep(.001)
-            sqs_client.delete_message(QueueUrl=config.SQS_QUEUE_URL, ReceiptHandle=message['ReceiptHandle'])
-    except KeyboardInterrupt:
-        logger_1st.info('Keyboard interrupt detected. Exiting...')
-    except Exception as e:
-        logger_1st.error(f'Error in 1st processing: {e}')
-        time.sleep(5)
+        except KeyboardInterrupt:
+            logger_1st.info('Keyboard interrupt detected. Exiting...')
+            break
+        except Exception as e:
+            logger_1st.error(f'Error in 1st processing: {e}')
+            
+    # try:
+    #     response = sqs_client.receive_message(QueueUrl=config.SQS_QUEUE_URL, MaxNumberOfMessages=1, WaitTimeSeconds=20)
+    #     if 'Messages' in response:
+    #         message = response['Messages'][0]
+    #         data = json.loads(message['Body'])
+    #         download_data(data)
+    #         time.sleep(.001)
+    #         sqs_client.delete_message(QueueUrl=config.SQS_QUEUE_URL, ReceiptHandle=message['ReceiptHandle'])
+    # except KeyboardInterrupt:
+    #     logger_1st.info('Keyboard interrupt detected. Exiting...')
+    # except Exception as e:
+    #     logger_1st.error(f'Error in 1st processing: {e}')
+    #     time.sleep(5)
 
 
 def manual_data_collection():

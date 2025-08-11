@@ -163,6 +163,27 @@ CREATE TABLE first_entry_withdrawn (
     FOREIGN KEY (entry_id) REFERENCES first_entry(id)
 );
 
+-- Horse table
+CREATE TABLE first_horse (
+    horse_id VARCHAR(255) PRIMARY KEY,
+    external_id VARCHAR(255),
+    name VARCHAR(255),
+    gender VARCHAR(255),
+    breed VARCHAR(255),
+    foaling_date DATE,
+    foaling_country VARCHAR(255),
+    color VARCHAR(255),
+    breeder VARCHAR(255),
+    horse_id_sire VARCHAR(255),
+    horse_id_dam VARCHAR(255),
+    horse_id_sire_dam VARCHAR(255),
+    horse_id_sire_sire VARCHAR(255),
+    horse_id_dam_sire VARCHAR(255),
+    horse_id_dam_dam VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 
 -- Indexes for better performance
 CREATE INDEX idx_first_fixture_date ON first_fixture(date);
