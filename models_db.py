@@ -201,3 +201,25 @@ class FirstEntryWithdrawn(Base):
     # Relationships
     entry = relationship("FirstEntry", back_populates="withdrawn_entries")
 
+
+class FirstHorse(Base):
+    __tablename__ = 'first_horse'
+    
+    horse_id = Column(String(255), primary_key=True)
+    external_id = Column(String(255))
+    name = Column(String(255))
+    gender = Column(String(255))
+    breed = Column(String(255))
+    foaling_date = Column(Date)
+    foaling_country = Column(String(255))
+    color = Column(String(255))
+    breeder = Column(String(255))
+    horse_id_sire = Column(String(255))
+    horse_id_dam = Column(String(255))
+    horse_id_sire_dam = Column(String(255))
+    horse_id_sire_sire = Column(String(255))
+    horse_id_dam_sire = Column(String(255))
+    horse_id_dam_dam = Column(String(255))
+    created_at = Column(DateTime, default=func.current_timestamp())
+    updated_at = Column(DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())
+    
