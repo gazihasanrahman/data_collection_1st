@@ -6,7 +6,7 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime, timedelta, date
 from dateutil.parser import parse
 import models_db as mdb
-import models_pd as mpd
+import x_models_pd as mpd
 from utils.sql import session_scope
 from utils.logger import get_logger
 from sqlalchemy import and_, or_

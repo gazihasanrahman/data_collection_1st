@@ -5,8 +5,8 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime, timedelta, date
 from dateutil.parser import parse
 from typing import List, Optional, Union, Dict, Any
-from models_pd import Fixture, Race, Entry
-import models_pd as etl
+from x_models_pd import Fixture, Race, Entry
+import x_models_pd as etl
 
 
 class FixtureDataTransformer:

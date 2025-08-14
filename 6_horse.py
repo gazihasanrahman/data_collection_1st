@@ -6,10 +6,10 @@ from pydantic import BaseModel, field_validator
 from datetime import datetime, timedelta, date
 from dateutil.parser import parse
 from typing import List, Optional, Union, Dict, Any
-from models_pd import Fixture, Race, Entry, Horse
-from database.models import FirstHorse
+from x_models_pd import Fixture, Race, Entry, Horse
+from database.general import FirstHorse
 from database.sql import session_scope
-import models_pd as etl
+import x_models_pd as etl
 from first import FirstAPI
 
 def parse_horse(data: Dict[str, Any]) -> etl.Horse:

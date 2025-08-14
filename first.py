@@ -54,7 +54,7 @@ class FirstAPI:
         except Exception as e:
             logger_1st.error(f"make_request(): {traceback.format_exc()}")
             if retry:
-                time.sleep(5)
+                time.sleep(10)
                 return self.make_request(url, method, params, data, retry=False)
             else:
                 return None
