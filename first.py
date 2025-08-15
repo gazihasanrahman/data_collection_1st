@@ -104,7 +104,6 @@ class FirstAPI:
             return None
 
 
-
     def get_runners(self, runner_id: str):
         url = f"https://api.gws-eg.com/data/runners/{runner_id}"
         result = self.make_request(url)
@@ -115,7 +114,7 @@ class FirstAPI:
         else:
             logger_1st.error(f"get_runners(): {result}")
             return None
-    
+
 
     def get_horses(self, horse_id: str):
         url = f"https://api.gws-eg.com/data/horses/{horse_id}"

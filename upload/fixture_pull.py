@@ -4,7 +4,10 @@ from utils.logger import logger_1st
 
 
 
-def upload_fixture_data(fixture: dict, overwrite: bool = False):
+def upload_fixture_from_pull(fixture: dict, overwrite: bool = False):
+    '''
+    upload fixture data received from pull method, which we pull from 1st's API.
+    '''
     try:
         with session_scope() as session:
             existing_fixture = session.query(FirstFixture).filter(FirstFixture.fixture_id == fixture['fixture_id']).first()
@@ -98,55 +101,56 @@ def upload_fixture_data(fixture: dict, overwrite: bool = False):
                     )
                     session.add(new_race)
 
-        entries = race.get('entry_data', [])
-        for entry in entries:
-            with session_scope() as session:
-                existing_entry = session.query(FirstEntry).filter(FirstEntry.entry_id == entry['entry_id']).first()
-                if existing_entry:
-                    if overwrite:
-                        existing_entry.race_id = entry.get('race_id')
-                        existing_entry.start_number = entry.get('start_number')
-                        existing_entry.program_number = entry.get('program_number')
-                        existing_entry.start_position = entry.get('start_position')
-                        existing_entry.coupled_indicator = entry.get('coupled_indicator')
-                        existing_entry.decoupled_number = entry.get('decoupled_number')
-                        existing_entry.scratch_indicator = entry.get('scratch_indicator')
-                        existing_entry.age = entry.get('age')
-                        existing_entry.weight = entry.get('weight')
-                        existing_entry.weight_unit = entry.get('weight_unit')
-                        existing_entry.horse_id = entry.get('horse_id')
-                        existing_entry.jockey_id = entry.get('jockey_id')
-                        existing_entry.trainer_id = entry.get('trainer_id')
-                        existing_entry.owner_id = entry.get('owner_id')
-                        existing_entry.breeder_name = entry.get('breeder_name')
-                        existing_entry.runner_tip = entry.get('runner_tip')
-                        existing_entry.tpd_runner_id = entry.get('tpd_runner_id')
-                else:
-                    new_entry = FirstEntry(
-                        entry_id = entry.get('entry_id'),
-                        race_id = entry.get('race_id'),
-                        start_number = entry.get('start_number'),
-                        program_number = entry.get('program_number'),
-                        start_position = entry.get('start_position'),
-                        coupled_indicator = entry.get('coupled_indicator'),
-                        decoupled_number = entry.get('decoupled_number'),
-                        scratch_indicator = entry.get('scratch_indicator'),
-                        age = entry.get('age'),
-                        weight = entry.get('weight'),
-                        weight_unit = entry.get('weight_unit'),
-                        horse_id = entry.get('horse_id'),
-                        jockey_id = entry.get('jockey_id'),
-                        trainer_id = entry.get('trainer_id'),
-                        owner_id = entry.get('owner_id'),
-                        breeder_name = entry.get('breeder_name'),
-                        runner_tip = entry.get('runner_tip'),
-                        tpd_runner_id = entry.get('tpd_runner_id'),
-                    )
-                    session.add(new_entry)
+        
+            entries = race.get('entry_data', [])
+            for entry in entries:
+                with session_scope() as session:
+                    existing_entry = session.query(FirstEntry).filter(FirstEntry.entry_id == entry['entry_id']).first()
+                    if existing_entry:
+                        if overwrite:
+                            existing_entry.race_id = entry.get('race_id')
+                            existing_entry.start_number = entry.get('start_number')
+                            existing_entry.program_number = entry.get('program_number')
+                            existing_entry.start_position = entry.get('start_position')
+                            existing_entry.coupled_indicator = entry.get('coupled_indicator')
+                            existing_entry.decoupled_number = entry.get('decoupled_number')
+                            existing_entry.scratch_indicator = entry.get('scratch_indicator')
+                            existing_entry.age = entry.get('age')
+                            existing_entry.weight = entry.get('weight')
+                            existing_entry.weight_unit = entry.get('weight_unit')
+                            existing_entry.horse_id = entry.get('horse_id')
+                            existing_entry.jockey_id = entry.get('jockey_id')
+                            existing_entry.trainer_id = entry.get('trainer_id')
+                            existing_entry.owner_id = entry.get('owner_id')
+                            existing_entry.breeder_name = entry.get('breeder_name')
+                            existing_entry.runner_tip = entry.get('runner_tip')
+                            existing_entry.tpd_runner_id = entry.get('tpd_runner_id')
+                    else:
+                        new_entry = FirstEntry(
+                            entry_id = entry.get('entry_id'),
+                            race_id = entry.get('race_id'),
+                            start_number = entry.get('start_number'),
+                            program_number = entry.get('program_number'),
+                            start_position = entry.get('start_position'),
+                            coupled_indicator = entry.get('coupled_indicator'),
+                            decoupled_number = entry.get('decoupled_number'),
+                            scratch_indicator = entry.get('scratch_indicator'),
+                            age = entry.get('age'),
+                            weight = entry.get('weight'),
+                            weight_unit = entry.get('weight_unit'),
+                            horse_id = entry.get('horse_id'),
+                            jockey_id = entry.get('jockey_id'),
+                            trainer_id = entry.get('trainer_id'),
+                            owner_id = entry.get('owner_id'),
+                            breeder_name = entry.get('breeder_name'),
+                            runner_tip = entry.get('runner_tip'),
+                            tpd_runner_id = entry.get('tpd_runner_id'),
+                        )
+                        session.add(new_entry)
 
         return True
     except Exception as e:
-        logger_1st.error(f'upload_fixture_data(): {e}')
+        logger_1st.error(f'upload_fixture_from_pull(): fixture_id: {fixture.get("fixture_id")}')
         logger_1st.error(traceback.format_exc())
         return False
     
