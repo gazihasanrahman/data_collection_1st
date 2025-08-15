@@ -24,6 +24,10 @@ if __name__ == '__main__':
         fixture_data = first_api.get_fofixtures(date=date)
 
         try:
+            if not fixture_data:
+                print(f'No fixture data for {date}')
+                continue
+            
             print(f'Processing {date} | items: {len(fixture_data)}')
         except Exception as e:
             print(f'Error processing {date}: {e}')
@@ -38,14 +42,19 @@ if __name__ == '__main__':
         owner_dict = fixture_result['owner_dict']
 
         for fixture in fixtures:
+            print(f'Uploading fixture: {fixture}')
             upload_fixture_from_pull(fixture, overwrite=True)
 
+        print(f'Uploading horse data: {len(horse_dict)}')
         bulk_insert_horse_data(horse_dict)
 
+        print(f'Uploading jockey data: {len(jockey_dict)}')
         bulk_insert_jockey_data(jockey_dict)
 
+        print(f'Uploading trainer data: {len(trainer_dict)}')
         bulk_insert_trainer_data(trainer_dict)
 
+        print(f'Uploading owner data: {len(owner_dict)}')
         bulk_insert_owner_data(owner_dict)
 
         time.sleep(5)
