@@ -81,7 +81,7 @@ def bulk_insert_horse_data(horse_dict: dict):
         for horse_id in new_horse_id_list:
             horse_data = first_api.get_horses(horse_id)
             horse_data_processed = process_horse_data(horse_data)
-            time.sleep(5)
+            time.sleep(1)
             if not horse_data_processed:
                 continue
             horse_data_to_insert.append(horse_data_processed)
