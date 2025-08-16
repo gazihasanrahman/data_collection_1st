@@ -3,6 +3,8 @@ from dateutil.parser import parse
 from process.helper import get_tpd_meeting_id, get_tpd_race_id, get_tpd_runner_id
 from utils.logger import logger_1st
 
+
+
 def process_fixture_from_pull(data: dict) -> dict:
     '''
     process fixture data received from pull method, which we pull from 1st's API.
@@ -86,26 +88,34 @@ def process_fixture_from_pull(data: dict) -> dict:
                     runner_tip = entry.get('runnerTip')
                     tpd_runner_id = get_tpd_runner_id(tpd_race_id, program_number)
 
-                    horse_dict[horse_id] = {
-                        'horse_id': horse_id,
-                    }
+                    # Only add to horse_dict if horse_id is valid
+                    if is_valid_id(horse_id):
+                        horse_dict[horse_id] = {
+                            'horse_id': horse_id,
+                        }
 
-                    jockey_dict[jockey_id] = {
-                        'jockey_id': jockey_id,
-                        'jockey_name': entry.get('jockey', {}).get('name'),
-                        'old_jockey_id': entry.get('jockey', {}).get('oldJockeyID'),
-                        'old_jockey_name': entry.get('jockey', {}).get('oldJockeyName'),
-                    }
+                    # Only add to jockey_dict if jockey_id is valid
+                    if is_valid_id(jockey_id):
+                        jockey_dict[jockey_id] = {
+                            'jockey_id': jockey_id,
+                            'jockey_name': entry.get('jockey', {}).get('name'),
+                            'old_jockey_id': entry.get('jockey', {}).get('oldJockeyID'),
+                            'old_jockey_name': entry.get('jockey', {}).get('oldJockeyName'),
+                        }
 
-                    trainer_dict[trainer_id] = {
-                        'trainer_id': trainer_id,
-                        'trainer_name': entry.get('trainer', {}).get('name'),
-                    }
+                    # Only add to trainer_dict if trainer_id is valid
+                    if is_valid_id(trainer_id):
+                        trainer_dict[trainer_id] = {
+                            'trainer_id': trainer_id,
+                            'trainer_name': entry.get('trainer', {}).get('name'),
+                        }
 
-                    owner_dict[owner_id] = {
-                        'owner_id': owner_id,
-                        'owner_name': entry.get('owner', {}).get('name'),
-                    }
+                    # Only add to owner_dict if owner_id is valid
+                    if is_valid_id(owner_id):
+                        owner_dict[owner_id] = {
+                            'owner_id': owner_id,
+                            'owner_name': entry.get('owner', {}).get('name'),
+                        }
 
                     entry_data.append({
                         'entry_id': entry_id,
@@ -184,4 +194,22 @@ def process_fixture_from_pull(data: dict) -> dict:
         'trainer_dict': trainer_dict,
         'owner_dict': owner_dict,
     }
+
+
+def is_valid_id(id_value):
+    try:
+        if id_value is None:
+            return False
+        if id_value == 0:
+            return False
+        if isinstance(id_value, str):
+            if not id_value.strip():
+                return False
+        return True
+    except Exception as e:
+        logger_1st.error(f'is_valid_id(): {e}')
+        logger_1st.error(traceback.format_exc())
+        return False
+
+
 
