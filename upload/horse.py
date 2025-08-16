@@ -1,8 +1,10 @@
 import traceback
 import time
+import json
 from database.general import session_scope, FirstHorse
 from first import FirstAPI
 from process.horse import process_horse_data
+from database.s3 import upload_to_s3
 from utils.logger import logger_1st
 
 
@@ -79,12 +81,19 @@ def bulk_insert_horse_data(horse_dict: dict):
         first_api = FirstAPI()
         horse_data_to_insert = []
         for horse_id in new_horse_id_list:
-            horse_data = first_api.get_horses(horse_id)
-            horse_data_processed = process_horse_data(horse_data)
-            time.sleep(1)
-            if not horse_data_processed:
+            try:
+                horse_data = first_api.get_horses(horse_id)
+                horse_data_processed = process_horse_data(horse_data)
+                time.sleep(1)
+                if not horse_data_processed:
+                    continue
+                horse_data_to_insert.append(horse_data_processed)
+                upload_to_s3(file_content=json.dumps(horse_data), s3_subdir='1st/processed')
+            except Exception as e:
+                logger_1st.error(f'bulk_insert_horse_data(): {e}')
+                logger_1st.error(traceback.format_exc())
+                upload_to_s3(file_content=json.dumps(horse_data), s3_subdir='1st/unprocessed')
                 continue
-            horse_data_to_insert.append(horse_data_processed)
 
         if not horse_data_to_insert:
             return False

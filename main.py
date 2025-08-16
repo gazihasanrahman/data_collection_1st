@@ -6,6 +6,12 @@ import boto3
 import config
 import schedule
 import threading
+
+from process.fixture_push import process_fixture_from_push
+from upload.fixture_push import upload_fixture_from_push
+from upload.price_history import bulk_insert_price_history_data
+from upload.race_status_history import bulk_insert_race_status_history_data
+
 from utils.logger import logger_1st
 
 sqs_client = boto3.client('sqs')
@@ -18,6 +24,8 @@ def download_data(data):
 
 
 def process_sqs_messages():
+
+    count = 0
     while True:
         try:
             response = sqs_client.receive_message(QueueUrl=config.SQS_QUEUE_URL, MaxNumberOfMessages=1, WaitTimeSeconds=20)
@@ -26,7 +34,24 @@ def process_sqs_messages():
                     data = json.loads(message['Body'])
                     download_data(data)
                     time.sleep(.001)
+                    logger_1st.info(f'Processing message: {count}')
+                    count += 1
+
+                    fixture_data = process_fixture_from_push(data)
+                    fixtures = fixture_data['fixtures']
+                    race_status_history_dict = fixture_data['race_status_history_dict']
+                    price_history_dict = fixture_data['price_history_dict']
+
+                    for fixture in fixtures:
+                        upload_fixture_from_push(fixture, overwrite=True)
+
+                    bulk_insert_race_status_history_data(race_status_history_dict)
+
+                    bulk_insert_price_history_data(price_history_dict)
+
                     sqs_client.delete_message(QueueUrl=config.SQS_QUEUE_URL, ReceiptHandle=message['ReceiptHandle'])
+
+                    break
         
         except KeyboardInterrupt:
             logger_1st.info('Keyboard interrupt detected. Exiting...')

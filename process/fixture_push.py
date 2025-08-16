@@ -89,7 +89,12 @@ def process_fixture_from_push(data:dict)-> dict:
                     starting_price_fraction, starting_price_percentage = calculate_price(starting_price_nominator, starting_price_denominator)
                     entry_fav_pos = entry.get('favPos')
                     entry_fav_joint = entry.get('favJoint')
-                    entry_final_position = entry.get('finalPosition', {}).get('position')
+                    entry_final_position_raw = entry.get('finalPosition', {}).get('position')
+                    try:
+                        entry_final_position = int(entry_final_position_raw)
+                    except (TypeError, ValueError):
+                        entry_final_position = None
+
                     entry_final_dead_heat = entry.get('finalPosition', {}).get('deadHeat')
                     entry_final_disqualified = entry.get('finalPosition', {}).get('disqualified')
                     entry_final_amended_position = entry.get('finalPosition', {}).get('amendedPosition')
