@@ -80,10 +80,13 @@ def bulk_insert_horse_data(horse_dict: dict):
 
         first_api = FirstAPI()
         horse_data_to_insert = []
+        count = 0
         for horse_id in new_horse_id_list:
             try:
                 horse_data = first_api.get_horses(horse_id)
                 horse_data_processed = process_horse_data(horse_data)
+                count += 1
+                logger_1st.info(f'bulk_insert_horse_data(): {count} | {horse_id}')
                 time.sleep(1)
                 if not horse_data_processed:
                     continue
