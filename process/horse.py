@@ -28,6 +28,14 @@ def process_horse_data(horse_data: dict) -> dict | None:
         breeder = horse_data.get('breeder')
         pedigree = horse_data.get('pedigree', [])
 
+        # Initialize pedigree variables
+        horse_id_sire = None
+        horse_id_dam = None
+        horse_id_sire_dam = None
+        horse_id_sire_sire = None
+        horse_id_dam_sire = None
+        horse_id_dam_dam = None
+
         for pedigree_item in pedigree:
             pedigree_id = pedigree_item.get('id')
             pedigree_type = pedigree_item.get('type')
