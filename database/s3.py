@@ -5,7 +5,11 @@ import boto3
 from datetime import datetime, timezone
 from utils.logger import logger_1st
 
-s3 = boto3.client('s3')
+s3 = boto3.client('s3', config=boto3.session.Config(
+    connect_timeout=30,
+    read_timeout=30,
+    retries={'max_attempts': 3}
+))
 
 def upload_to_s3(file_content: str, s3_subdir: str, bucket_name: str = 'tpd-archive', file_name: str = None):
     try:

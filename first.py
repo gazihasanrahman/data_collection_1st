@@ -19,7 +19,7 @@ class FirstAPI:
         auth_url = "https://api.gws-eg.com/client/session/login"
         auth_headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         auth_payload = {"username": self.username, "password": self.password}
-        response = requests.post(auth_url, data=json.dumps(auth_payload), headers=auth_headers)
+        response = requests.post(auth_url, data=json.dumps(auth_payload), headers=auth_headers, timeout=30)
         data = response.json()
 
         if response.status_code != 200:
@@ -48,7 +48,7 @@ class FirstAPI:
     def make_request(self, url, method="GET", params=None, data=None, retry=True):
         headers = self.get_headers()
         try:
-            response = requests.request(method, url, headers=headers, params=params, json=data)
+            response = requests.request(method, url, headers=headers, params=params, json=data, timeout=30)
             response.raise_for_status()
             return response.json()
         except Exception as e:
