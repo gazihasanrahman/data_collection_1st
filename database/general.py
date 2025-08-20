@@ -6,6 +6,7 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.dialects.mysql import BIGINT, DATETIME, INTEGER, LONGTEXT, MEDIUMBLOB, MEDIUMTEXT, SMALLINT, TEXT, TIME, TINYINT, VARCHAR
 from sqlalchemy.ext.declarative import declarative_base
 from utils.logger import logger_database_errors
+import traceback
 
 
 HOST = os.environ.get("MARIADB_HOST", "")
@@ -29,6 +30,7 @@ def session_scope(engine: Engine = mariadb_engine, raise_error: bool = False):
     except Exception as e:
         session.rollback()
         logger_database_errors.error(e)
+        logger_database_errors.error(traceback.format_exc())
         if raise_error:
             raise
     finally:
@@ -248,8 +250,8 @@ class FirstEntry(Base):
     owner_id = Column(VARCHAR(8))
     breeder_name = Column(Text)
     entry_status = Column(VARCHAR(16))
-    starting_price_fraction = Column(VARCHAR(8))
-    starting_price_percentage = Column(Float)
+    starting_price_nominator = Column(VARCHAR(4))
+    starting_price_denominator = Column(VARCHAR(4))
     fav_pos = Column(VARCHAR(4))
     fav_joint = Column(VARCHAR(4))
     final_position = Column(Integer)
@@ -267,8 +269,8 @@ class FirstPriceHistory(Base):
     price_id = Column(VARCHAR(16), primary_key=True)
     entry_id = Column(VARCHAR(16))
     timestamp = Column(DateTime)
-    price_fraction = Column(VARCHAR(8))
-    price_percentage = Column(Float)
+    numerator = Column(VARCHAR(4))
+    denominator = Column(VARCHAR(4))
     market = Column(VARCHAR(4))
     created_at = Column(DateTime, default=func.current_timestamp())
     updated_at = Column(DateTime, default=func.current_timestamp(), onupdate=func.current_timestamp())

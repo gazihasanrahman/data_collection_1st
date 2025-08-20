@@ -107,36 +107,39 @@ def get_tpd_runner_id(tpd_race_id :int, program_number :str) -> int:
 
 
 
-def calculate_price(nominator, denominator) -> tuple[str, float]:
-    show_price_fraction = None
-    show_price_percentage = None
-    def is_valid_number(value):
-        if value is None:
-            return False
-        if isinstance(value, (int, float)):
-            return True
-        if isinstance(value, str):
-            if not value.strip():
-                return False
-            try:
-                float(value)
-                return True
-            except ValueError:
-                return False
-        return False
-    if is_valid_number(nominator) and is_valid_number(denominator):
-        try:
-            nom_val = float(nominator)
-            den_val = float(denominator)
-            if den_val == 0:
-                logger_1st.error(f'calculate_price(): Division by zero - denominator: {denominator}')
-                return show_price_fraction, show_price_percentage
-            show_price_fraction = f'{nominator}/{denominator}'
-            show_price_percentage = round((nom_val / den_val) * 100, 2)
-        except Exception as e:
-            logger_1st.error(f'calculate_price(): nominator: {nominator}, denominator: {denominator}')
-            logger_1st.error(traceback.format_exc())
-    return show_price_fraction, show_price_percentage
+# def calculate_price(nominator, denominator) -> tuple[str, float]:
+#     show_price_fraction = None
+#     show_price_percentage = None
+#     def is_valid_number(value):
+#         if value is None:
+#             return False
+#         if isinstance(value, (int, float)):
+#             return True
+#         if isinstance(value, str):
+#             if not value.strip():
+#                 return False
+#             try:
+#                 float(value)
+#                 return True
+#             except ValueError:
+#                 return False
+#         return False
+#     if is_valid_number(nominator) and is_valid_number(denominator):
+#         try:
+#             nom_val = float(nominator)
+#             den_val = float(denominator)
+#             if den_val == 0:
+#                 logger_1st.error(f'calculate_price(): Division by zero - denominator: {denominator}')
+#                 return show_price_fraction, show_price_percentage
+#             show_price_fraction = f'{nominator}/{denominator}'
+#             # Calculate decimal odds: (numerator ÷ denominator) + 1
+#             decimal_odds = (nom_val / den_val) + 1
+#             # Calculate implied probability: 1 ÷ decimal_odds
+#             show_price_percentage = 1 / decimal_odds
+#         except Exception as e:
+#             logger_1st.error(f'calculate_price(): nominator: {nominator}, denominator: {denominator}')
+#             logger_1st.error(traceback.format_exc())
+#     return show_price_fraction, show_price_percentage
 
 
 

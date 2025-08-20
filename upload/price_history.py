@@ -17,16 +17,16 @@ def upload_price_history_data(price_history: dict, overwrite: bool = False):
                 if overwrite:
                     existing_price_history.entry_id = price_history.get('entry_id')
                     existing_price_history.timestamp = price_history.get('timestamp')
-                    existing_price_history.price_fraction = price_history.get('price_fraction')
-                    existing_price_history.price_percentage = price_history.get('price_percentage')
+                    existing_price_history.numerator = price_history.get('numerator')
+                    existing_price_history.denominator = price_history.get('denominator')
                     existing_price_history.market = price_history.get('market')
             else:
                 new_price_history = FirstPriceHistory(
                     price_id = price_history.get('price_id'),
                     entry_id = price_history.get('entry_id'),
                     timestamp = price_history.get('timestamp'),
-                    price_fraction = price_history.get('price_fraction'),
-                    price_percentage = price_history.get('price_percentage'),
+                    numerator = price_history.get('numerator'),
+                    denominator = price_history.get('denominator'),
                     market = price_history.get('market'),
                 )
                 session.add(new_price_history)

@@ -6,7 +6,6 @@ from process.helper import (
     get_tpd_runner_id, 
     get_price_id, 
     get_race_status_id, 
-    calculate_price, 
 )
 from utils.logger import logger_1st
 
@@ -86,7 +85,6 @@ def process_fixture_from_push(data:dict)-> dict:
                     entry_weight_unit = entry.get('weight', {}).get('unit')
                     starting_price_nominator = entry.get('startingPrice', {}).get('nominator')
                     starting_price_denominator = entry.get('startingPrice', {}).get('denominator')
-                    starting_price_fraction, starting_price_percentage = calculate_price(starting_price_nominator, starting_price_denominator)
                     entry_fav_pos = entry.get('favPos')
                     entry_fav_joint = entry.get('favJoint')
                     entry_final_position_raw = entry.get('finalPosition', {}).get('position')
@@ -102,18 +100,18 @@ def process_fixture_from_push(data:dict)-> dict:
 
                     show_prices = entry.get('showPrices', [])
                     for show_price in show_prices:
-                        show_price_timestamp = show_price.get('timestamp')
+                        show_price_timestamp_string = show_price.get('timestamp')
+                        show_price_timestamp = parse(show_price_timestamp_string) if show_price_timestamp_string else None
                         show_price_numerator = show_price.get('numerator')
                         show_price_denominator = show_price.get('denominator')
                         show_price_market = show_price.get('market')
-                        show_price_fraction, show_price_percentage = calculate_price(show_price_numerator, show_price_denominator)
                         price_id = get_price_id(entry_id, show_price_timestamp)
                         price_history_dict[price_id] = {
                             'price_id': price_id,
                             'entry_id': entry_id,
                             'timestamp': show_price_timestamp,
-                            'price_fraction': show_price_fraction,
-                            'price_percentage': show_price_percentage,
+                            'numerator': show_price_numerator,
+                            'denominator': show_price_denominator,
                             'market': show_price_market,
                         }
 
@@ -130,8 +128,8 @@ def process_fixture_from_push(data:dict)-> dict:
                         'weight': entry_weight,
                         'weight_unit': entry_weight_unit,
                         'jockey_id': jockey_id,
-                        'starting_price_fraction': starting_price_fraction,
-                        'starting_price_percentage': starting_price_percentage,
+                        'starting_price_nominator': starting_price_nominator,
+                        'starting_price_denominator': starting_price_denominator,
                         'fav_pos': entry_fav_pos,
                         'fav_joint': entry_fav_joint,
                         'final_position': entry_final_position,

@@ -73,6 +73,8 @@ def upload_fixture_from_push(fixture: dict, overwrite: bool = False):
                         tpd_race_id = race.get('tpd_race_id'),
                     )
                     session.add(new_race)
+            
+            
 
             entries = race.get('entry_data', [])
             for entry in entries:
@@ -91,8 +93,8 @@ def upload_fixture_from_push(fixture: dict, overwrite: bool = False):
                             existing_entry.weight = entry.get('weight')
                             existing_entry.weight_unit = entry.get('weight_unit')
                             existing_entry.jockey_id = entry.get('jockey_id')
-                            existing_entry.starting_price_fraction = entry.get('starting_price_fraction')
-                            existing_entry.starting_price_percentage = entry.get('starting_price_percentage')
+                            existing_entry.starting_price_nominator = entry.get('starting_price_nominator')
+                            existing_entry.starting_price_denominator = entry.get('starting_price_denominator')
                             existing_entry.fav_pos = entry.get('fav_pos')
                             existing_entry.fav_joint = entry.get('fav_joint')
                             existing_entry.final_position = entry.get('final_position')
@@ -114,8 +116,8 @@ def upload_fixture_from_push(fixture: dict, overwrite: bool = False):
                             weight = entry.get('weight'),
                             weight_unit = entry.get('weight_unit'),
                             jockey_id = entry.get('jockey_id'),
-                            starting_price_fraction = entry.get('starting_price_fraction'),
-                            starting_price_percentage = entry.get('starting_price_percentage'),
+                            starting_price_nominator = entry.get('starting_price_nominator'),
+                            starting_price_denominator = entry.get('starting_price_denominator'),
                             fav_pos = entry.get('fav_pos'),
                             fav_joint = entry.get('fav_joint'),
                             final_position = entry.get('final_position'),
@@ -125,6 +127,9 @@ def upload_fixture_from_push(fixture: dict, overwrite: bool = False):
                             tpd_runner_id = entry.get('tpd_runner_id'),
                         )
                         session.add(new_entry)
+            
+            logger_1st.info(f'uploaded: race_id - {race.get("race_id")}')
+
         return True
     except Exception as e:
         logger_1st.error(f'upload_fixture_from_push(): fixture_id: {fixture.get("fixture_id")}')
