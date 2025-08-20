@@ -19,7 +19,7 @@ class FirstAPI:
         auth_url = "https://api.gws-eg.com/client/session/login"
         auth_headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         auth_payload = {"username": self.username, "password": self.password}
-        response = requests.post(auth_url, data=json.dumps(auth_payload), headers=auth_headers)
+        response = requests.post(auth_url, data=json.dumps(auth_payload), headers=auth_headers, timeout=30)
         data = response.json()
 
         if response.status_code != 200:
@@ -48,13 +48,13 @@ class FirstAPI:
     def make_request(self, url, method="GET", params=None, data=None, retry=True):
         headers = self.get_headers()
         try:
-            response = requests.request(method, url, headers=headers, params=params, json=data)
+            response = requests.request(method, url, headers=headers, params=params, json=data, timeout=30)
             response.raise_for_status()
             return response.json()
         except Exception as e:
             logger_1st.error(f"make_request(): {traceback.format_exc()}")
             if retry:
-                time.sleep(5)
+                time.sleep(10)
                 return self.make_request(url, method, params, data, retry=False)
             else:
                 return None
@@ -104,7 +104,6 @@ class FirstAPI:
             return None
 
 
-
     def get_runners(self, runner_id: str):
         url = f"https://api.gws-eg.com/data/runners/{runner_id}"
         result = self.make_request(url)
@@ -115,7 +114,7 @@ class FirstAPI:
         else:
             logger_1st.error(f"get_runners(): {result}")
             return None
-    
+
 
     def get_horses(self, horse_id: str):
         url = f"https://api.gws-eg.com/data/horses/{horse_id}"
