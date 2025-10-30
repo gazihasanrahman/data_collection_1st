@@ -18,6 +18,7 @@ from upload.horse import bulk_insert_horse_data
 from upload.jockey import bulk_insert_jockey_data
 from upload.trainer import bulk_insert_trainer_data
 from upload.owner import bulk_insert_owner_data
+from process.helper import manually_map_all_tpd_ids
 from utils.logger import logger_1st
 
 sqs_client = boto3.client('sqs')
@@ -93,6 +94,7 @@ def manual_data_collection():
 
 def schedule_jobs():
     schedule.every(1).day.at('02:30').do(manual_data_collection)
+    schedule.every(1).hour.do(manually_map_all_tpd_ids)
     while True:
         schedule.run_pending()
         time.sleep(1)
