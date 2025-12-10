@@ -1,6 +1,6 @@
 import traceback
 from dateutil.parser import parse
-from process.helper import get_tpd_meeting_id, get_tpd_race_id, get_tpd_runner_id
+from process.helper import get_tpd_meeting_id, get_tpd_race_id, get_tpd_runner_id, generate_race_class
 from utils.logger import logger_1st
 
 
@@ -28,6 +28,7 @@ def process_fixture_from_pull(data: dict) -> dict:
             fixture_temperature_celsius = fixture_header.get('temperature', {}).get('celsius')
             track_id = fixture.get('track', {}).get('id')
             tpd_meeting_id = get_tpd_meeting_id(track_id, fixture_date)
+            country_name = fixture.get('track', {}).get('countryName')
 
             race_data = []
             races = fixture.get('races', [])
@@ -62,6 +63,7 @@ def process_fixture_from_pull(data: dict) -> dict:
                 purse = int(purse_string) if purse_string else None
                 purse_ranks = race.get('purse', {}).get('ranks')
                 purse_unit = race.get('purse', {}).get('unit')
+                race_class = generate_race_class(total_prize=purse, currency=purse_unit, country_name=country_name)
                 race_grade = race.get('grade')
                 race_tip = race.get('raceTip')
                 tpd_race_id = get_tpd_race_id(tpd_meeting_id, race_number, race_post_time)
@@ -164,6 +166,7 @@ def process_fixture_from_pull(data: dict) -> dict:
                     'purse': purse,
                     'purse_ranks': purse_ranks,
                     'purse_unit': purse_unit,
+                    'race_class': race_class,
                     'race_name': race_name,
                     'race_comment': race_comment,
                     'race_tip': race_tip,

@@ -186,6 +186,7 @@ class FirstRace(Base):
     racetype_subtype = Column(VARCHAR(64))
     sex_restriction_id = Column(VARCHAR(8))
     age_restriction_id = Column(VARCHAR(8))
+    race_class = Column(VARCHAR(12), nullable=True)
     purse = Column(Integer)
     purse_ranks = Column(VARCHAR(255))
     purse_unit = Column(VARCHAR(16))

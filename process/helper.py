@@ -261,6 +261,67 @@ def get_tpd_runner_id(tpd_race_id :int, program_number :str) -> int:
     return tpd_runner_id
 
 
+def generate_race_class(total_prize: int, currency: str, country_name: str) -> str:
+    usd_conversion_dict = {
+        "USD": 1.0,
+        "EUR": 1.08,
+        "GBP": 1.27,
+        "CAD": 0.72,
+        "AUD": 0.65,
+        "JPY": 0.0067,
+        "CHF": 1.13,
+        "CNY": 0.14,
+        "INR": 0.012,
+        "MXN": 0.049,
+        "BRL": 0.17,
+        "KRW": 0.00071,
+        "SGD": 0.75,
+        "HKD": 0.13,
+        "NZD": 0.59,
+        "SEK": 0.094,
+        "NOK": 0.089,
+        "DKK": 0.14,
+        "ZAR": 0.055,
+        "AED": 0.27,
+        "ARS": 0.00099,
+        "UYU": 0.023,
+        "CLP": 0.00099,
+        "COP": 0.00023,
+        "PEN": 0.27,
+        "VES": 0.027,
+        "BOB": 0.14,
+        "PYG": 0.00013,
+        }
+    race_class_dict_us = {
+        '6': 12700,
+        '5': 25400,
+        '4': 50800,
+        '3': 95250,
+        '2': 190500,
+        }
+    try:
+        if not currency in usd_conversion_dict:
+            logger_1st.error(f"currency {currency} not found in conversion dictionary")
+            return None
+
+        total_prize_usd = total_prize * usd_conversion_dict.get(currency)
+        match country_name:
+            case "US":
+                race_class_dict = race_class_dict_us
+            case _:
+                # logger_1st.error(f"country code {country_name} not available for race class generation")
+                # return None
+                race_class_dict = race_class_dict_us # TEMP: default to USA
+
+        for i, v in race_class_dict.items():
+            if total_prize_usd < v:
+                return i
+        return '1'
+    except Exception as e:
+        logger_1st.error(f'generate_race_class(): total_prize: {total_prize}, currency: {currency}, country_name: {country_name}')
+        logger_1st.error(traceback.format_exc())
+        return None
+
 
 
 
