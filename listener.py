@@ -2,8 +2,9 @@ import os
 import json
 import boto3
 from typing import Dict, Any
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import JSONResponse
 import uvicorn
 import config
 from utils.logger import logger_1st
@@ -15,6 +16,26 @@ app = FastAPI(title="Data Collection API", version="1.0.0")
 security = HTTPBearer()
 api_key = os.getenv("TPD_API_KEY")
 sqs_client = boto3.client('sqs')
+
+
+# Global exception handler for all unhandled exceptions
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger_1st.error(f"Unhandled exception on {request.method} {request.url.path}: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"status": "error", "detail": "Internal server error"}
+    )
+
+
+# HTTP exception handler for FastAPI HTTPExceptions
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    logger_1st.warning(f"HTTP {exc.status_code} on {request.method} {request.url.path}: {exc.detail}")
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"status": "error", "detail": exc.detail}
+    )
 
 
 def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)) -> bool:
